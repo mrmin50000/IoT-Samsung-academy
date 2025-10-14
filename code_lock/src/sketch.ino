@@ -42,40 +42,48 @@ void loop() {
   unsigned long currentTime = millis();
   unsigned long stateDuration = currentTime - stateStartTime;
   int ldrValue = analogRead(LDR_PIN);
-  Serial.println(ldrValue);
-  if (ldrValue >= 1000) {
+  if (ldrValue <= 1000) {
     stateDoor = DAY;
   }
   switch (stateDoor) {
     
     case CLOSE:
       digitalWrite(LED_PIN, HIGH);
-      digitalWrite(RELAY_PIN, LOW);
+      digitalWrite(RELAY_PIN, HIGH);
 
       buttonState_1 = digitalRead(BUTTON_1);
       buttonState_2 = digitalRead(BUTTON_2);
       buttonState_3 = digitalRead(BUTTON_3);
       buttonState_4 = digitalRead(BUTTON_4);
 
+      if (i > 0 && stateDuration > 3000) {
+        Serial.println("Time out");
+        i = 0;
+      }
+
       if (!buttonState_1) {
         code[i] = 1;
         ++i;
         delay(300);
+        stateStartTime = currentTime;
       }      
       else if (!buttonState_2) {
         code[i] = 2;
         ++i;
         delay(300);
+        stateStartTime = currentTime;
       }
       else if (!buttonState_3) {
         code[i] = 3;
         ++i;
         delay(300);
+        stateStartTime = currentTime;
       }
       else if (!buttonState_4) {
         code[i] = 4;
         ++i;
         delay(300);
+        stateStartTime = currentTime;
       }
 
       if (i == 4) {
@@ -88,7 +96,7 @@ void loop() {
       case OPEN:
         
         if (code[0] == pass[0] && code[1] == pass[1] && code[2] == pass[2] && code[3] == pass[3] && stateDuration <= 10000) {
-          digitalWrite(RELAY_PIN, HIGH);
+          digitalWrite(RELAY_PIN, LOW);
           digitalWrite(LED_PIN, (currentTime / 500) % 2);
         }
         else {
@@ -101,7 +109,7 @@ void loop() {
 
       case DAY:
 
-        digitalWrite(RELAY_PIN, HIGH);
+        digitalWrite(RELAY_PIN, LOW);
         digitalWrite(LED_PIN, LOW);
         stateDoor = CLOSE;
 
