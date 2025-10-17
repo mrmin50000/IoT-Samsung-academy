@@ -1,8 +1,9 @@
 #include <Arduino.h>
-#define BUTTON_1 2
-#define BUTTON_2 0
-#define BUTTON_3 4
-#define BUTTON_4 16
+#define BUTTON_1 19
+#define BUTTON_2 18
+#define BUTTON_3 21
+#define BUTTON_4 5
+#include <string>
 
 bool buttonState_1 = false;
 bool buttonState_2 = false;
@@ -11,9 +12,9 @@ bool buttonState_4 = false;
 
 unsigned long stateStartTime = 0;
 
-#define LED_PIN 14
-#define RELAY_PIN 22
-#define LDR_PIN 26
+#define LED_PIN 2
+#define RELAY_PIN 27
+#define LDR_PIN 35
 
 int pass[4] = {1, 2, 3, 4};
 int code[4];
@@ -29,7 +30,7 @@ State stateDoor;
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(115200);
+  Serial.begin(9600);
   pinMode(BUTTON_1, INPUT_PULLUP);
   pinMode(BUTTON_2, INPUT_PULLUP);
   pinMode(BUTTON_3, INPUT_PULLUP);
@@ -37,6 +38,7 @@ void setup() {
   pinMode(RELAY_PIN, OUTPUT);
   pinMode(LED_PIN, OUTPUT);
 }
+std::string a = "Time out";
 
 void loop() {  
   unsigned long currentTime = millis();
@@ -45,6 +47,7 @@ void loop() {
   if (ldrValue <= 1000) {
     stateDoor = DAY;
   }
+  Serial.println("");
   switch (stateDoor) {
     
     case CLOSE:
@@ -57,7 +60,7 @@ void loop() {
       buttonState_4 = digitalRead(BUTTON_4);
 
       if (i > 0 && stateDuration > 3000) {
-        Serial.println("Time out");
+        a = "Time out";
         i = 0;
       }
 

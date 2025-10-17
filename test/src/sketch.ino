@@ -1,18 +1,18 @@
 #include <Arduino.h>
-const int servoPin = 18;
-const int ledChannel = 0;
-// Частота ШИМ для серво: 50 Гц
-const int pwmFreq = 50;
-const int resolution = 10;
+#include <DHT.h>
+#define DHT_PIN 32
+#define DHT_TYPE DHT11
+
+DHT dht(DHT_PIN, DHT_TYPE);
 
 void setup() {
-  ledcSetup(ledChannel, pwmFreq, resolution);
-  ledcAttachPin(servoPin, ledChannel);
+ Serial.begin(9600);
+ dht.begin();
 }
 
 void loop() {
-  ledcWrite(ledChannel, 26);
-  delay(1000);
-  ledcWrite(ledChannel, 60);
-  delay(1000);
+ float h = dht.readHumidity();
+  float t = dht.readTemperature();
+ Serial.println("Temp: "+String(t)+"; Hum: "+String(h));
+ delay(1000);
 }
